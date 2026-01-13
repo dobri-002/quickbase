@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data.Common;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 
 namespace Backend;
 
@@ -14,7 +12,7 @@ public class SqliteDbManager : IDbManager
             connection.Open();
             return connection;
         }
-        catch(SqliteException ex)
+        catch (SqliteException ex)
         {
             Console.WriteLine(ex.Message);
             return null;

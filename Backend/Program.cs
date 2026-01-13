@@ -12,7 +12,7 @@ var statServicePopulations = StatServicePopulationAggregator.GetCountryPopulatio
 var sqlitePopulations = SqlitePopulationAggregator.GetCountryPopulations(dbManager);
 
 var finalPopulations = PopulationMergeService.MergePopulations(
-    statServicePopulations, 
+    statServicePopulations,
     sqlitePopulations,
     conflictResolver: (statServiceItem, sqliteItem) => sqliteItem // In case of conflict, prefer database value
 );
