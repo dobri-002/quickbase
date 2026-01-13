@@ -1,14 +1,25 @@
 ﻿using Backend;
-using System;
-using System.Data.Common;
+using Backend.PopulationAggregator;
 
 Console.WriteLine("Started");
-Console.WriteLine("Getting DB Connection...");
+Console.WriteLine("Aggregating population data...");
 
-IDbManager db = new SqliteDbManager();
-DbConnection conn = db.GetConnection();
+var dbManager = new SqliteDbManager();
+var statService = new ConcreteStatService();
 
-if (conn == null)
+// Get aggregated data from each source
+var statServicePopulations = StatServicePopulationAggregator.GetCountryPopulations(statService);
+var sqlitePopulations = SqlitePopulationAggregator.GetCountryPopulations(dbManager);
+
+var finalPopulations = PopulationMergeService.MergePopulations(
+    statServicePopulations, 
+    sqlitePopulations,
+    conflictResolver: (statServiceItem, sqliteItem) => sqliteItem // In case of conflict, prefer database value
+);
+
+Console.WriteLine();
+Console.WriteLine("Merged Country Populations:");
+foreach (var data in finalPopulations.OrderBy(cp => cp.Country))
 {
-    Console.WriteLine("Failed to get connection");
+    Console.WriteLine($"{data.Country}: {data.Population:N0}");
 }

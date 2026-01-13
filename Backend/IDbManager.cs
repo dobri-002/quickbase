@@ -1,6 +1,4 @@
-﻿using System.Data.Common;
-
-namespace Backend;
+﻿namespace Backend;
 
 public interface IDbManager
 {
