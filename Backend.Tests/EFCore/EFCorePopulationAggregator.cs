@@ -9,22 +9,20 @@ namespace Backend.Tests.EFCore;
 /// </summary>
 public static class EFCorePopulationAggregator
 {
-    public static async Task<List<CountryPopulation>> GetCountryPopulationsAsync()
+    public static async Task<IReadOnlyList<CountryPopulation>> GetCountryPopulationsAsync()
     {
         await using var context = new PopulationDbContext();
 
-        var countries = await context.Countries
-            .Include(country => country.States)
-                .ThenInclude(state => state.Cities)
-            .ToListAsync();
-
-        return countries
+        var countryPopulations = await context.Countries
             .Select(country => new CountryPopulation(
                 country.CountryName,
                 country.States
-                    .SelectMany(s => s.Cities)
-                    .Sum(c => c.Population)
+                    .SelectMany(state => state.Cities)
+                    .Sum(city => city.Population)
             ))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
+
+        return countryPopulations;
     }
 }
