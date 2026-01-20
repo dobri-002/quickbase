@@ -1,3 +1,3 @@
 namespace Backend.PopulationAggregator;
 
-public record CountryPopulation(string Country, int Population);
+public sealed record CountryPopulation(string Country, int Population);
